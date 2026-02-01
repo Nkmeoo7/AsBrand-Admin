@@ -18,14 +18,15 @@ import '../../sub_category/sub_category_screen.dart';
 
 class MainScreenProvider extends ChangeNotifier{
   Widget selectedScreen = DashboardScreen();
-
+  String currentScreenName = 'Dashboard';
 
 
   navigateToScreen(String screenName) {
+    currentScreenName = screenName;
     switch (screenName) {
       case 'Dashboard':
         selectedScreen = DashboardScreen();
-        break; // Break statement needed here
+        break;
       case 'Category':
         selectedScreen = CategoryScreen();
         break;
@@ -63,6 +64,7 @@ class MainScreenProvider extends ChangeNotifier{
         selectedScreen = const UsersScreen();
         break;
       default:
+        currentScreenName = 'Dashboard';
         selectedScreen = DashboardScreen();
     }
     notifyListeners();
