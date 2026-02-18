@@ -41,7 +41,7 @@ class _CategoryListSectionState extends State<CategoryListSection> {
             width: double.infinity,
             child: Consumer<DataProvider>(
               builder: (context, dataProvider, child) {
-                final allCategories = dataProvider.categories;
+                final allCategories = List.from(dataProvider.categories.reversed);
                 final displayedCategories =
                     allCategories.take(visibleCount).toList();
 

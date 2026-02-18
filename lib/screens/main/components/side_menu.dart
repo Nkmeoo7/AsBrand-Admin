@@ -25,8 +25,8 @@ class SideMenu extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset("assets/images/logo.png", height: 50),
-                    const SizedBox(height: 10),
+                    Image.asset("assets/images/aslogo.png", height: 110, width: 110,),
+                    //const SizedBox(height: 10),
                     const Text(
                       'Admin Panel',
                       style: TextStyle(color: Colors.white70, fontSize: 12),

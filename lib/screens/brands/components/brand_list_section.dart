@@ -42,7 +42,7 @@ class _BrandListSectionState extends State<BrandListSection> {
             width: double.infinity,
             child: Consumer<DataProvider>(
               builder: (context, dataProvider, child) {
-                final allBrands = dataProvider.brands;
+                final allBrands = List.from(dataProvider.brands.reversed);
                 final displayedBrands = allBrands.take(visibleCount).toList();
 
                 return Column(

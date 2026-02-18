@@ -45,7 +45,7 @@ class _VariantsListSectionState extends State<VariantsListSection> {
             width: double.infinity,
             child: Consumer<DataProvider>(
               builder: (context, dataProvider, child) {
-                final allVariants = dataProvider.variants;
+                final allVariants = List.from(dataProvider.variants.reversed);
                 final displayedVariants =
                     allVariants.take(visibleCount).toList();
 
