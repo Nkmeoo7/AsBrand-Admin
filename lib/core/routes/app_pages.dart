@@ -1,17 +1,19 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import '../../screens/main/main_screen.dart';
-
-
+import '../../screens/login/login_screen.dart';
 
 class AppPages {
   static const HOME = '/';
+  static const LOGIN = '/login';
 
   static final routes = [
     GetPage(
       name: HOME,
-      fullscreenDialog: true,
-      page: () => MainScreen()
+      page: () => MainScreen(),
     ),
-
+    GetPage(
+      name: LOGIN,
+      page: () => const LoginScreen(),
+    ),
   ];
 }
