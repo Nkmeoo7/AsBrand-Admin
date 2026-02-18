@@ -152,7 +152,7 @@ class CouponCodeProvider extends ChangeNotifier {
       selectedDiscountType = coupon.discountType ?? 'fixed';
       discountAmountCtrl.text = '${coupon.discountAmount}';
       minimumPurchaseAmountCtrl.text = '${coupon.minimumPurchaseAmount}';
-      endDateCtrl.text = '${coupon.endDate}';
+      endDateCtrl.text = _formatEndDate(coupon.endDate);
       selectedCouponStatus = coupon.status ?? 'active';
       selectedCategory = _dataProvider.categories.firstWhereOrNull(
           (element) => element.sId == coupon.applicableCategory?.sId);
@@ -180,5 +180,17 @@ class CouponCodeProvider extends ChangeNotifier {
 
   updateUi() {
     notifyListeners();
+  }
+}
+
+String _formatEndDate(String? isoDate) {
+  if (isoDate == null || isoDate.isEmpty) return '';
+  try {
+    final dt = DateTime.parse(isoDate).toLocal();
+    final month = dt.month.toString().padLeft(2, '0');
+    final day = dt.day.toString().padLeft(2, '0');
+    return '${dt.year}-$month-$day';
+  } catch (_) {
+    return isoDate;
   }
 }

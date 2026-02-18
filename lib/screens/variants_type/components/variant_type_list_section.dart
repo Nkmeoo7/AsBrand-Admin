@@ -165,7 +165,7 @@ DataRow variantTypeDataRow(VariantType VariantTypeInfo, int index, {Function? ed
         ),
       ),
       DataCell(Text(VariantTypeInfo.type ?? '')),
-      DataCell(Text(VariantTypeInfo.createdAt ?? '')),
+      DataCell(Text(_formatDate(VariantTypeInfo.createdAt))),
       DataCell(IconButton(
           onPressed: () {
             if (edit != null) edit();
@@ -184,4 +184,21 @@ DataRow variantTypeDataRow(VariantType VariantTypeInfo, int index, {Function? ed
           ))),
     ],
   );
+}
+
+String _formatDate(String? isoDate) {
+  if (isoDate == null || isoDate.isEmpty) return '';
+  try {
+    final dt = DateTime.parse(isoDate).toLocal();
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    final hour = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
+    final minute = dt.minute.toString().padLeft(2, '0');
+    final period = dt.hour < 12 ? 'AM' : 'PM';
+    return '${dt.day} ${months[dt.month - 1]} ${dt.year}, $hour:$minute $period';
+  } catch (_) {
+    return isoDate;
+  }
 }
