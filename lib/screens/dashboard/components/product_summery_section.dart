@@ -70,7 +70,6 @@ class ProductSummerySection extends StatelessWidget {
               itemBuilder: (context, index) => ProductSummeryCard(
                 info: productSummeryItems[index],
                 onTap: (productType) {
-                  //TODO: should complete call filterProductsByQuantity
                   context.dataProvider.filterProductsByQuantity(productType ?? '');
                 },
               ),

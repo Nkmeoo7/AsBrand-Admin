@@ -8,6 +8,7 @@ import 'components/add_product_form.dart';
 import 'components/order_details_section.dart';
 import 'components/product_list_section.dart';
 import 'components/product_summery_section.dart';
+import 'components/product_filter_section.dart';
 
 class DashboardScreen extends StatelessWidget {
   @override
@@ -38,6 +39,7 @@ class DashboardScreen extends StatelessWidget {
                           ),
                           ElevatedButton.icon(
                             style: TextButton.styleFrom(
+                              backgroundColor: primaryColor,
                               padding: EdgeInsets.symmetric(
                                 horizontal: defaultPadding * 1.5,
                                 vertical: defaultPadding,
@@ -46,8 +48,8 @@ class DashboardScreen extends StatelessWidget {
                             onPressed: () {
                               showAddProductForm(context, null);
                             },
-                            icon: Icon(Icons.add),
-                            label: Text("Add New"),
+                            icon: Icon(Icons.add, color: Colors.white,),
+                            label: Text("Add New Product", style: TextStyle(color: Colors.white),),
                           ),
                           Gap(20),
                           IconButton(
@@ -60,6 +62,9 @@ class DashboardScreen extends StatelessWidget {
                       ),
                       Gap(defaultPadding),
                       ProductSummerySection(),
+                      Gap(defaultPadding),
+                      Gap(defaultPadding),
+                      ProductFilterSection(),
                       Gap(defaultPadding),
                       ProductListSection(),
                     ],

@@ -37,6 +37,7 @@ class PosterScreen extends StatelessWidget {
                           ),
                           ElevatedButton.icon(
                             style: TextButton.styleFrom(
+                              backgroundColor: primaryColor,
                               padding: EdgeInsets.symmetric(
                                 horizontal: defaultPadding * 1.5,
                                 vertical: defaultPadding,
@@ -45,8 +46,8 @@ class PosterScreen extends StatelessWidget {
                             onPressed: () {
                               showAddPosterForm(context, null);
                             },
-                            icon: Icon(Icons.add),
-                            label: Text("Add New"),
+                            icon: Icon(Icons.add, color: Colors.white,),
+                            label: Text("Add New", style: TextStyle(color: Colors.white),),
                           ),
                           Gap(20),
                           IconButton(

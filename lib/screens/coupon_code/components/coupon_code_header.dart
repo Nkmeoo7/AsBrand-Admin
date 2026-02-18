@@ -20,7 +20,7 @@ class CouponCodeHeader extends StatelessWidget {
         Expanded(child: SearchField(
           onChange: (val) {
             //TODO: should complete  call filterCoupons
-             context.dataProvider.filterCoupons(val);
+            context.dataProvider.filterCoupons(val);
           },
         )),
         ProfileCard()
@@ -55,7 +55,7 @@ class ProfileCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-            child: Text("Angelina Jolie"),
+            child: Text("Sandeep AS"),
           ),
           Icon(Icons.keyboard_arrow_down),
         ],

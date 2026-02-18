@@ -17,8 +17,7 @@ class DashBoardHeader extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge,
         ),
         Spacer(flex: 1),
-        Expanded(
-            child: SearchField(
+        Expanded(child: SearchField(
           onChange: (val) {
             //TODO: should complete call filterProducts
             context.dataProvider.filterProducts(val);
@@ -56,7 +55,7 @@ class ProfileCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-            child: Text("Angelina Jolie"),
+            child: Text("Sandeep AS"),
           ),
           Icon(Icons.keyboard_arrow_down),
         ],

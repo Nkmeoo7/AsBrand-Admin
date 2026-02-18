@@ -21,11 +21,13 @@ class DataProvider extends ChangeNotifier {
   List<Category> _allCategories = [];
   List<Category> _filteredCategories = [];
   List<Category> get categories => _filteredCategories;
+  List<Category> get allCategories => _allCategories;
 
   List<SubCategory> _allSubCategories = [];
   List<SubCategory> _filteredSubCategories = [];
 
   List<SubCategory> get subCategories => _filteredSubCategories;
+  List<SubCategory> get allSubCategories => _allSubCategories;
 
   List<Brand> _allBrands = [];
   List<Brand> _filteredBrands = [];
@@ -58,6 +60,9 @@ class DataProvider extends ChangeNotifier {
   List<MyNotification> _allNotifications = [];
   List<MyNotification> _filteredNotifications = [];
   List<MyNotification> get notifications => _filteredNotifications;
+
+  String _selectedOrderFilter = 'All order';
+  String get selectedOrderFilter => _selectedOrderFilter;
 
   DataProvider() {
     getAllProduct();
@@ -265,8 +270,16 @@ class DataProvider extends ChangeNotifier {
               (json as List).map((item) => Product.fromJson(item)).toList(),
         ); // ApiResponse.fromJson
         _allProducts = apiResponse.data ?? [];
-        _filteredProducts =
-            List.from(_allProducts); // Initialize filtered list with all data
+        // Sort by createdAt descending (newest first)
+        _allProducts.sort((a, b) {
+          final dateA = DateTime.tryParse(a.createdAt ?? '');
+          final dateB = DateTime.tryParse(b.createdAt ?? '');
+          if (dateA == null && dateB == null) return 0;
+          if (dateA == null) return 1;
+          if (dateB == null) return -1;
+          return dateB.compareTo(dateA);
+        });
+        _filteredProducts = List.from(_allProducts); // Initialize filtered list with all data
         notifyListeners();
         if (showSnack) SnackBarHelper.showSuccessSnackBar(apiResponse.message);
       }
@@ -301,6 +314,26 @@ class DataProvider extends ChangeNotifier {
             subCategoryNameContainsKeyword;
       }).toList();
     }
+    notifyListeners();
+  }
+
+  void filterProductsByDetails(
+      {String? categoryId,
+      String? subCategoryId,
+      double? minPrice,
+      double? maxPrice}) {
+    _filteredProducts = _allProducts.where((product) {
+      final categoryMatches =
+          categoryId == null || product.proCategoryId?.sId == categoryId;
+      final subCategoryMatches = subCategoryId == null ||
+          product.proSubCategoryId?.sId == subCategoryId;
+      final priceMatches = (minPrice == null ||
+              (product.price != null && product.price! >= minPrice)) &&
+          (maxPrice == null ||
+              (product.price != null && product.price! <= maxPrice));
+
+      return categoryMatches && subCategoryMatches && priceMatches;
+    }).toList();
     notifyListeners();
   }
 
@@ -407,6 +440,7 @@ class DataProvider extends ChangeNotifier {
 
   //TODO: should complete filterOrders
   void filterOrders(String keyword) {
+    _selectedOrderFilter = keyword.isEmpty ? 'All order' : keyword;
     if (keyword.isEmpty || keyword.toLowerCase() == 'all order') {
       _filteredOrders = List.from(_allOrders);
     } else {
@@ -448,17 +482,31 @@ class DataProvider extends ChangeNotifier {
   //TODO: should complete calculateProductWithQuantity
   int calculateProductWithQuantity({int? quantity}) {
     int totalProducts = 0;
-    // If targetQuantity is null it returns total product count
+
     if (quantity == null) {
       totalProducts = _allProducts.length;
     } else {
       for (Product product in _allProducts) {
         if (product.quantity != null && product.quantity == quantity) {
-          totalProducts +=
-              1; // Increment the count if quantity matches the target
+          totalProducts += 1;
         }
       }
     }
     return totalProducts;
+  }
+
+  int calculateOrdersWithStatus({String? status}) {
+    int totalOrders = 0;
+    if (status == null) {
+      totalOrders = _allOrders.length;
+    } else {
+      for (Order order in _allOrders) {
+        if (order.orderStatus != null &&
+            order.orderStatus?.toLowerCase() == status.toLowerCase()) {
+          totalOrders += 1;
+        }
+      }
+    }
+    return totalOrders;
   }
 }

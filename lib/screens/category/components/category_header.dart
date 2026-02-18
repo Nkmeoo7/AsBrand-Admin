@@ -21,7 +21,6 @@ class CategoryHeader extends StatelessWidget {
           onChange: (val) {
             //TODO: should complete call filterCategories
             context.dataProvider.filterCategories(val);
-
           },
         )),
         ProfileCard()
@@ -56,7 +55,7 @@ class ProfileCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-            child: Text("Angelina Jolie"),
+            child: Text("Sandeep AS"),
           ),
           Icon(Icons.keyboard_arrow_down),
         ],

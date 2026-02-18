@@ -39,7 +39,7 @@ class OrderScreen extends StatelessWidget {
                             width: 280,
                             child: CustomDropdown(
                               hintText: 'Filter Order By status',
-                              initialValue: 'All order',
+                              initialValue: Provider.of<DataProvider>(context).selectedOrderFilter,
                               items: ['All order', 'pending', 'processing', 'shipped', 'delivered', 'cancelled'],
                               displayItem: (val) => val,
                               onChanged: (newValue) {

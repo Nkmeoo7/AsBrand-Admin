@@ -8,52 +8,60 @@ class OrderInfoCard extends StatelessWidget {
     required this.title,
     required this.svgSrc,
     required this.totalOrder,
+    this.onTap,
   }) : super(key: key);
 
   final String title, svgSrc;
   final int totalOrder;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: defaultPadding),
-      padding: EdgeInsets.all(defaultPadding),
-      decoration: BoxDecoration(
-        border: Border.all(width: 2, color: primaryColor.withOpacity(0.15)),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(defaultPadding),
-        ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: const BorderRadius.all(
+        Radius.circular(defaultPadding),
       ),
-      child: Row(
-        children: [
-          SizedBox(
-            height: 20,
-            width: 20,
-            child: SvgPicture.asset(svgSrc),
+      child: Container(
+        margin: EdgeInsets.only(top: defaultPadding),
+        padding: EdgeInsets.all(defaultPadding),
+        decoration: BoxDecoration(
+          border: Border.all(width: 2, color: primaryColor.withOpacity(0.15)),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(defaultPadding),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    "$totalOrder Files",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(color: Colors.white70),
-                  ),
-                ],
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              height: 20,
+              width: 20,
+              child: SvgPicture.asset(svgSrc),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      "$totalOrder Files",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: Colors.white70),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
