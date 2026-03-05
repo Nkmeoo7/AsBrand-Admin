@@ -143,4 +143,147 @@ class SupplierAdminProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  // ── Product Approval ──
+
+  List<ProductInfo> _allProducts = [];
+  List<ProductInfo> _filteredProducts = [];
+  List<ProductInfo> get products => _filteredProducts;
+
+  int _productTotal = 0;
+  int _productPending = 0;
+  int _productApproved = 0;
+  int get productTotal => _productTotal;
+  int get productPending => _productPending;
+  int get productApproved => _productApproved;
+
+  Future<void> fetchProducts({bool showSnack = false}) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      Response response = await service.getItems(endpointUrl: 'supplier/admin/products');
+      if (response.isOk && response.body != null) {
+        final body = response.body;
+        final list = (body['data'] as List?) ?? [];
+        _allProducts = list.map((e) => ProductInfo.fromJson(e)).toList();
+        _filteredProducts = List.from(_allProducts);
+
+        final stats = body['stats'] ?? {};
+        _productTotal = stats['total'] ?? _allProducts.length;
+        _productPending = stats['pending'] ?? 0;
+        _productApproved = stats['approved'] ?? 0;
+
+        if (showSnack) SnackBarHelper.showSuccessSnackBar('${_allProducts.length} products loaded');
+      }
+    } catch (e) {
+      if (showSnack) SnackBarHelper.showErrorSnackBar(e.toString());
+      log('Error fetching products: $e');
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> approveProduct(String productId) async {
+    try {
+      Response response = await service.updateItem(
+        endpointUrl: 'supplier/admin/products/approve',
+        itemId: productId,
+        itemData: {},
+      );
+      if (response.isOk) {
+        SnackBarHelper.showSuccessSnackBar('Product approved!');
+        await fetchProducts();
+      } else {
+        SnackBarHelper.showErrorSnackBar(response.body?['message'] ?? 'Failed to approve');
+      }
+    } catch (e) {
+      SnackBarHelper.showErrorSnackBar(e.toString());
+    }
+  }
+
+  Future<void> rejectProduct(String productId) async {
+    try {
+      Response response = await service.updateItem(
+        endpointUrl: 'supplier/admin/products/reject',
+        itemId: productId,
+        itemData: {},
+      );
+      if (response.isOk) {
+        SnackBarHelper.showSuccessSnackBar('Product rejected');
+        await fetchProducts();
+      } else {
+        SnackBarHelper.showErrorSnackBar(response.body?['message'] ?? 'Failed to reject');
+      }
+    } catch (e) {
+      SnackBarHelper.showErrorSnackBar(e.toString());
+    }
+  }
+
+  void filterProducts(String keyword) {
+    if (keyword.isEmpty) {
+      _filteredProducts = List.from(_allProducts);
+    } else {
+      final lower = keyword.toLowerCase();
+      _filteredProducts = _allProducts.where((p) {
+        return p.name.toLowerCase().contains(lower) ||
+            (p.supplierStoreName ?? '').toLowerCase().contains(lower);
+      }).toList();
+    }
+    notifyListeners();
+  }
+}
+
+class ProductInfo {
+  final String id;
+  final String name;
+  final double price;
+  final double? offerPrice;
+  final int quantity;
+  final bool isApproved;
+  final String? supplierStoreName;
+  final String? supplierName;
+  final String? categoryName;
+  final String? subCategoryName;
+  final String? imageUrl;
+  final String? createdAt;
+
+  ProductInfo({
+    required this.id,
+    required this.name,
+    required this.price,
+    this.offerPrice,
+    required this.quantity,
+    this.isApproved = false,
+    this.supplierStoreName,
+    this.supplierName,
+    this.categoryName,
+    this.subCategoryName,
+    this.imageUrl,
+    this.createdAt,
+  });
+
+  factory ProductInfo.fromJson(Map<String, dynamic> json) {
+    final supplier = json['supplierId'] as Map<String, dynamic>? ?? {};
+    final supplierProfile = supplier['supplierProfile'] as Map<String, dynamic>? ?? {};
+    final category = json['proCategoryId'];
+    final subCategory = json['proSubCategoryId'];
+    final images = json['images'] as List? ?? [];
+
+    return ProductInfo(
+      id: json['_id'] ?? '',
+      name: json['name'] ?? 'Unnamed',
+      price: (json['price'] ?? 0).toDouble(),
+      offerPrice: json['offerPrice'] != null ? (json['offerPrice']).toDouble() : null,
+      quantity: json['quantity'] ?? 0,
+      isApproved: json['isApproved'] ?? false,
+      supplierStoreName: supplierProfile['storeName'],
+      supplierName: supplier['name'],
+      categoryName: category is Map ? category['name'] : null,
+      subCategoryName: subCategory is Map ? subCategory['name'] : null,
+      imageUrl: images.isNotEmpty ? images[0]['url'] : null,
+      createdAt: json['createdAt'],
+    );
+  }
 }
